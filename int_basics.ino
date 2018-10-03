@@ -1,22 +1,25 @@
+// First iteration: using HW interrupt, pin 2.
+#include "ver_led.h"
 
-#include <PinChangeInt.h>
- 
 const byte ledPin = 13;
+const byte interruptPin = 2;
 volatile byte state = LOW;
  
 void setup()
 {
+   ver_led_setup(2);
    pinMode(ledPin, OUTPUT);
-   pinMode(A0, INPUT_PULLUP);
-   PCintPort::attachInterrupt(A0, isr, CHANGE);
+   pinMode(interruptPin, INPUT_PULLUP);
+   attachInterrupt(digitalPinToInterrupt(interruptPin), blink, CHANGE);
 }
  
 void loop()
 {
    digitalWrite(ledPin, state);
+   ver_led_run();
 }
  
-void isr() 
+void blink()
 {
    state = !state;
 }
