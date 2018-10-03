@@ -1,25 +1,23 @@
-// First iteration: using HW interrupt, pin 2.
-#include "ver_led.h"
+//Next iteration:  pin change interrupts.
 
 const byte ledPin = 13;
-const byte interruptPin = 2;
 volatile byte state = LOW;
  
 void setup()
 {
-   ver_led_setup(2);
    pinMode(ledPin, OUTPUT);
-   pinMode(interruptPin, INPUT_PULLUP);
-   attachInterrupt(digitalPinToInterrupt(interruptPin), blink, CHANGE);
+   pinMode(A0, INPUT_PULLUP);
+   PCMSK1 = B00000001;  
+   PCIFR =  B00000000;
+   PCICR =  B00000010;
 }
  
 void loop()
 {
    digitalWrite(ledPin, state);
-   ver_led_run();
 }
  
-void blink()
+ISR(PCINT1_vect)
 {
    state = !state;
 }
